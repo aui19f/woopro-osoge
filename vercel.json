@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter osoge build",
+  "outputDirectory": ".next",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "framework": "nextjs"
+}

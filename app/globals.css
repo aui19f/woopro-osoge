@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@source "../components/ui";
+
+@theme {
+  /* 공통 디자인 토큰 (@repo/ui globals.css 와 동일) */
+  /* --color-point: #150a38;
+  --color-secondary: #f2a73b;
+  --color-accent: #b7d7bb;
+  --color-error: #d62718; */
+
+  --color-point: #3059e3; /* 핵심 액션 (Primary) */
+  --color-base: #f8fafc; /* 전체 배경 (Background) */
+  --color-sub: #64748b; /* 보조 텍스트 및 UI (Slate 500) */
+
+  /* 추가 설정 */
+  --color-secondary: #dbeafe; /* 보조 액션 및 강조 배경 (Blue 100) */
+  --color-accent: #f59e0b; /* 알림, 대기, 주의 (Amber 500) */
+  --color-error: #ef4444; /* 오류, 취소, 경고 (Red 500) */
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  /* @apply text-slate-600 bg-white; */
+}
+
+/* h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply text-slate-800 font-bold;
+} */
+
+/* @layer base {
+  input,
+  textarea,
+  select {
+    @apply bg-slate-50 border border-slate-300 placeholder:text-slate-300 focus:border-blue-400 h-12 rounded-sm;
+  }
+} */

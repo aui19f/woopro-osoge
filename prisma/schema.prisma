@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum EnumRole {
+  GUEST
+  ADMIN
+  MASTER
+}
+
+enum EnumUserStatus {
+  JOIN
+  WITHDRAW
+}
+
+enum EnumReceptionStatus {
+  WAITING     // 대기 (키오스크 접수)
+  READY       // 준비
+  IN_PROGRESS // 진행
+  DONE        // 완료
+  CANCELLED   // 취소
+}
+
+enum EnumPaymentTiming {
+  PREPAID  // 선불
+  POSTPAID // 후불
+}
+
+enum EnumPaymentMethod {
+  CARD         // 카드
+  CASH         // 현금
+  TRANSFER     // 계좌
+  GIFT_VOUCHER // 상품권
+  OTHER        // 그 외
+}
+
+enum EnumExpenseMethod {
+  CARD  // 카드
+  CASH  // 현금
+  PAY   // 페이
+  OTHER // 그외
+}
+
+model plan {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  print        Boolean @default(false)
+  register     Boolean @default(false)
+  send_message Boolean @default(false)
+  users        users[]
+
+  @@map("plan")
+}
+
+model users {
+  id         String         @id
+  created_at DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at DateTime       @default(now()) @updatedAt @db.Timestamptz(6)
+  email      String         @unique
+  role       EnumRole       @default(GUEST)
+  status     EnumUserStatus @default(JOIN)
+  nickname   String?
+
+  plan   plan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planId String?
+
+  store store[]
+}
+
+model store {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  users   users?  @relation(fields: [usersId], references: [id], onDelete: SetNull)
+  usersId String?
+
+  @@map("store")
+}
+
+model reception {
+  id           String                @id       // YYYYMMDD + 순번 (예: 20260519001)
+  created_at   DateTime              @default(now()) @db.Timestamptz(6)
+  phone        String?
+  name         String?
+  date         String                          // YYYYMMDD
+  time         String                          // HH:mm:ss
+  agreed              Boolean               @default(false)
+  status              EnumReceptionStatus   @default(READY)
+  message_sent_count  Int                   @default(0)
+  updated_by          String?               // 마지막 수정자 ID
+
+  // 결제
+  payment_amount Int?
+  payment_timing EnumPaymentTiming?
+  payment_method EnumPaymentMethod?
+
+  // 수량
+  quantity Int @default(1)
+
+  // 수선증 이미지 (최대 10장, URL 배열)
+  images String[]
+
+  memo String?
+
+  deadline     String?               // YYYYMMDD, optional
+
+  storeId String? // 임시: store 개발 전까지 로그인 사용자 ID 저장
+
+  @@map("reception")
+}
+
+model expense_category {
+  id            String                @id @default(cuid())
+  name          String
+  order         Int                   @default(0)
+  subcategories expense_subcategory[]
+
+  @@map("expense_category")
+}
+
+model expense_subcategory {
+  id          String           @id @default(cuid())
+  name        String
+  description String?
+  order       Int              @default(0)
+  categoryId  String
+  category    expense_category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  expenses    expense[]
+
+  @@map("expense_subcategory")
+}
+
+model push_subscription {
+  id         String   @id @default(cuid())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  endpoint   String   @unique
+  p256dh     String
+  auth       String
+
+  @@map("push_subscription")
+}
+
+model expense {
+  id            String               @id @default(cuid())
+  created_at    DateTime             @default(now()) @db.Timestamptz(6)
+  date          String               // YYYYMMDD
+  amount        Int
+  method        EnumExpenseMethod
+  memo          String?
+  storeId       String?
+  subcategoryId String?
+  subcategory   expense_subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+
+  @@map("expense")
+}

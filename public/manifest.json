@@ -1,0 +1,17 @@
+{
+  "name": "오소게 접수시스템",
+  "short_name": "오소게",
+  "description": "오소게 접수 관리 시스템",
+  "start_url": "/master",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/images/osoge_main_01.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
