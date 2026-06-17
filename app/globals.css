@@ -23,6 +23,13 @@ body {
   /* @apply text-slate-600 bg-white; */
 }
 
+/* iOS Safari가 포커스 시 자동 확대하는 것을 방지 (font-size 16px 미만일 때 발생) */
+input,
+textarea,
+select {
+  font-size: max(16px, 1em);
+}
+
 /* h1,
 h2,
 h3,
