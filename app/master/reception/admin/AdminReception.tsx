@@ -410,7 +410,6 @@ export default function AdminReception({ todayCount, todayISO }: Props) {
                       type="button"
                       onClick={() => {
                         setMemo((prev) => (prev ? `${prev} ${tag}` : tag));
-                        memoRef.current?.focus();
                       }}
                       className="px-2.5 h-8 rounded-lg bg-slate-100 text-slate-600 text-sm font-medium hover:bg-slate-200 active:bg-slate-300 transition-colors touch-manipulation"
                     >
